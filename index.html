@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UppalapatiFarms — Pure. Traditional. Naturally Made.</title>
+    <meta name="description" content="Pure traditional Indian cow ghee handcrafted from our farm to your home. 100% natural, no additives, no preservatives.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="view-cinematic">
+
+    <!-- GLOBAL TOP NAVIGATION BAR -->
+    <header class="main-header" id="main-header">
+        <div class="nav-container">
+            <a href="#" class="brand-logo" onclick="switchView('home'); return false;">
+                <div class="logo-mark">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+                        <path d="M12 6v12M6 12h12" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">UppalapatiFarms<sup>®</sup></span>
+                    <span class="brand-tagline">PURE BY NATURE</span>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#home" id="nav-home" class="nav-link" onclick="switchView('home'); return false;">Home</a>
+                <a href="#ghee" id="nav-ghee" class="nav-link" onclick="navigateToGhee(); return false;">Ghee</a>
+                <a href="#story" id="nav-story" class="nav-link active" onclick="switchView('cinematic'); return false;">Our Story</a>
+                <a href="#contact" id="nav-contact" class="nav-link" onclick="navigateToContact(); return false;">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Search" onclick="openToast('Search functionality coming soon')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Account" onclick="openToast('Account login coming soon')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
+                <button class="icon-btn cart-btn" id="cart-icon-btn" aria-label="Cart" onclick="toggleCartDrawer(true)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                    </svg>
+                    <span class="cart-badge" id="cart-badge-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- VIEW 1: CINEMATIC STORY SCROLL EXPERIENCE -->
+    <div id="cinematic-view" class="view-section">
+        <!-- Minimal Top-Right HOME Button (ONLY navigation element during Cinematic Story) -->
+        <button class="cinematic-home-btn" onclick="switchView('home')" aria-label="Go to Homepage">
+            HOME
+        </button>
+
+        <div class="cinematic-scroll-container" id="cinematic-scroll-container">
+            <canvas id="frame-canvas"></canvas>
+            <video id="scroll-video" src="output.mp4" preload="auto" muted playsinline style="display:none;"></video>
+            
+            <!-- Floating Scroll Progress Indicator -->
+            <div class="scroll-indicator" id="scroll-indicator">
+                <div class="mouse-icon">
+                    <div class="wheel"></div>
+                </div>
+                <span>SCROLL TO DISCOVER THE STORY</span>
+            </div>
+
+            <!-- Final Frame Minimal Cinematic CTA: Real Button Only -->
+            <div class="cinematic-buy-overlay" id="cinematic-buy-overlay">
+                <button class="btn btn-cinematic-buy" onclick="addCinematicToCart()" aria-label="Buy Now">
+                    <span>BUY NOW</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: NORMAL ECOMMERCE HOMEPAGE -->
+    <div id="homepage-view" class="view-section" style="display:none;">
+        
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <div class="hero-bg" style="background-image: url('assets/hero_bg.jpg');"></div>
+            <div class="hero-overlay"></div>
+            
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <span class="hero-sub">FROM OUR FARM</span>
+                    <h1 class="hero-title">To Your<br>Home</h1>
+                    <p class="hero-desc">Pure. Traditional. Naturally Made.</p>
+
+                    <div class="hero-cta-group">
+                        <a href="#ghee-section" class="btn btn-primary btn-hero" onclick="scrollToGhee(); return false;">
+                            SHOP GHEE &nbsp;&rsaquo;
+                        </a>
+                        <button class="btn btn-secondary btn-hero" onclick="switchView('cinematic')">
+                            WATCH OUR STORY &#9654;
+                        </button>
+                    </div>
+
+                    <div class="hero-feature-pills">
+                        <div class="feature-pill">
+                            <div class="pill-icon">🌱</div>
+                            <span>From Our Farm</span>
+                        </div>
+                        <div class="feature-pill">
+                            <div class="pill-icon">🏺</div>
+                            <span>Naturally Prepared</span>
+                        </div>
+                        <div class="feature-pill">
+                            <div class="pill-icon">💧</div>
+                            <span>No Additives No Preservatives</span>
+                        </div>
+                        <div class="feature-pill">
+                            <div class="pill-icon">💛</div>
+                            <span>Goodness for Family</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-jar-preview">
+                    <div class="jar-glow"></div>
+                    <img src="assets/ghee_500ml.jpg" alt="UppalapatiFarms Ghee Jar" class="hero-jar-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- GHEE PRODUCTS SECTION -->
+        <section class="section products-section" id="ghee-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag">OUR PRODUCTS</span>
+                    <h2 class="section-title">Pure Traditional Ghee</h2>
+                    <p class="section-subtitle">Churned with care, packed with natural aroma and golden granular perfection.</p>
+                </div>
+
+                <div class="products-grid">
+                    
+                    <!-- PRODUCT 1: 500ml -->
+                    <div class="product-card">
+                        <div class="product-badge">BEST VALUE</div>
+                        <div class="product-image-wrap">
+                            <img src="assets/ghee_500ml.jpg" alt="UppalapatiFarms Ghee 500ml" class="product-img">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-meta">
+                                <span class="product-volume">500 ml Glass Jar</span>
+                                <div class="product-rating">★★★★★ <span>(4.9/5)</span></div>
+                            </div>
+                            <h3 class="product-name">UppalapatiFarms Ghee — 500 ml</h3>
+                            <p class="product-desc">Ideal for family meals, daily cooking, ayurvedic remedies, and festive sweets.</p>
+                            
+                            <div class="product-price-row">
+                                <div class="product-price">
+                                    <span class="price-val">₹649</span>
+                                    <span class="price-unit">incl. taxes</span>
+                                </div>
+                                <button class="btn btn-primary" onclick="addToCart('ghee-500', 'UppalapatiFarms Ghee', '500 ml', 649, 'assets/ghee_500ml.jpg')">
+                                    ADD TO CART
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT 2: 100ml -->
+                    <div class="product-card">
+                        <div class="product-badge secondary">SAMPLE / TRAVEL</div>
+                        <div class="product-image-wrap">
+                            <img src="assets/ghee_100ml.jpg" alt="UppalapatiFarms Ghee 100ml" class="product-img">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-meta">
+                                <span class="product-volume">100 ml Compact Jar</span>
+                                <div class="product-rating">★★★★★ <span>(4.8/5)</span></div>
+                            </div>
+                            <h3 class="product-name">UppalapatiFarms Ghee — 100 ml</h3>
+                            <p class="product-desc">Perfect size to taste the pure farm freshness or carry on trips and rituals.</p>
+                            
+                            <div class="product-price-row">
+                                <div class="product-price">
+                                    <span class="price-val">₹149</span>
+                                    <span class="price-unit">incl. taxes</span>
+                                </div>
+                                <button class="btn btn-outline" onclick="addToCart('ghee-100', 'UppalapatiFarms Ghee', '100 ml', 149, 'assets/ghee_100ml.jpg')">
+                                    ADD TO CART
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- OUR STORY BANNER / PREVIEW SECTION -->
+        <section class="story-preview-section" id="story-section">
+            <div class="container">
+                <div class="story-box">
+                    <div class="story-content">
+                        <span class="section-tag alt">CINEMATIC JOURNEY</span>
+                        <h2>Experience The Farm To Jar Story</h2>
+                        <p>Discover how grass-fed cows, traditional churning methods, and golden patience transform farm-fresh milk into pure aromatic ghee.</p>
+                        <button class="btn btn-gold btn-large" onclick="switchView('cinematic')">
+                            PLAY STORY ANIMATION &nbsp;&#9654;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REVIEWS SECTION -->
+        <section class="section reviews-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag">CUSTOMER REVIEWS</span>
+                    <h2 class="section-title">Loved By Families Across India</h2>
+                </div>
+
+                <div class="reviews-grid">
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">"The aroma when opening the jar brought back memories of my grandmother's kitchen. Authentic granular texture and pure ghee flavor!"</p>
+                        <div class="reviewer">- Ananya Sharma, Hyderabad</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">"We have been searching for 100% natural ghee for our children. UppalapatiFarms delivers real farm purity without any chemical smell."</p>
+                        <div class="reviewer">- Rajesh Varma, Vijayawada</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">"Extremely prompt delivery and the 500ml glass packaging is very premium. Highly recommend to everyone who loves good food."</p>
+                        <div class="reviewer">- Priya K., Visakhapatnam</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section class="section contact-section" id="contact-section">
+            <div class="container">
+                <div class="contact-card-grid">
+                    <div class="contact-info-col">
+                        <span class="section-tag">GET IN TOUCH</span>
+                        <h2 class="section-title">UppalapatiFarms</h2>
+                        <p>Have questions about our farm process or bulk orders? We'd love to hear from you.</p>
+
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <span class="contact-icon">📍</span>
+                                <div>
+                                    <strong>Farm Address</strong>
+                                    <p>Uppalapati Farms, Rural District, Andhra Pradesh, India</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">📞</span>
+                                <div>
+                                    <strong>Phone / WhatsApp</strong>
+                                    <p>+91 98765 43210</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">✉️</span>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p>care@uppalapatifarms.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-col">
+                        <form class="contact-form" onsubmit="handleContactSubmit(event)">
+                            <h3>Send Us A Message</h3>
+                            <div class="form-group">
+                                <label>Your Name</label>
+                                <input type="text" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" placeholder="Enter your mobile number" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea rows="4" placeholder="How can we help you?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full">SEND MESSAGE</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <div class="container footer-container">
+                <div class="footer-brand">
+                    <h3>UppalapatiFarms<sup>®</sup></h3>
+                    <p>Pure. Traditional. Naturally Made.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="switchView('home'); return false;">Home</a>
+                    <a href="#" onclick="navigateToGhee(); return false;">Ghee</a>
+                    <a href="#" onclick="switchView('cinematic'); return false;">Our Story</a>
+                    <a href="#" onclick="navigateToContact(); return false;">Contact</a>
+                </div>
+                <div class="footer-copy">
+                    &copy; 2026 UppalapatiFarms. All rights reserved.
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <!-- GLOBAL SHARED CART DRAWER -->
+    <div class="cart-backdrop" id="cart-backdrop" onclick="toggleCartDrawer(false)"></div>
+    
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <div class="cart-header-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                </svg>
+                <h3>Your Cart</h3>
+            </div>
+            <button class="cart-close-btn" onclick="toggleCartDrawer(false)" aria-label="Close cart">&times;</button>
+        </div>
+
+        <div class="cart-body" id="cart-items-container">
+            <!-- Dynamically populated via script.js -->
+        </div>
+
+        <div class="cart-footer" id="cart-footer">
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">₹0</span>
+                </div>
+                <div class="price-row">
+                    <span>Delivery</span>
+                    <span class="free-text">FREE</span>
+                </div>
+                <div class="price-row total-row">
+                    <span>Total</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-large w-full" id="proceed-btn" onclick="openCheckout()">
+                PROCEED TO BOOK
+            </button>
+        </div>
+    </aside>
+
+
+    <!-- CHECKOUT / BOOKING MODAL -->
+    <div class="modal-backdrop" id="checkout-backdrop">
+        <div class="modal-card checkout-modal">
+            <button class="modal-close" onclick="closeCheckout()">&times;</button>
+            <div class="modal-header">
+                <h2>Customer & Delivery Details</h2>
+                <p>Complete your booking to receive fresh farm ghee at your doorstep.</p>
+            </div>
+
+            <form class="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group span-2">
+                        <label>Full Name *</label>
+                        <input type="text" id="cust-name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="cust-phone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="cust-email" placeholder="email@domain.com">
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label>Full Delivery Address *</label>
+                        <textarea id="cust-address" rows="2" placeholder="House/Flat No., Street, Area" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="cust-city" placeholder="City" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="cust-state" placeholder="State" required>
+                    </div>
+
+                    <div class="form-group span-2">
+                        <label>Pincode *</label>
+                        <input type="text" id="cust-pin" placeholder="6-digit pincode" required pattern="[0-9]{6}">
+                    </div>
+                </div>
+
+                <div class="payment-method-box">
+                    <h3>Payment Options</h3>
+                    <div class="payment-options">
+                        <label class="payment-radio active">
+                            <input type="radio" name="payment" value="cod" checked onclick="selectPayment(this)">
+                            <span>💵 Cash on Delivery (COD)</span>
+                        </label>
+                        <label class="payment-radio">
+                            <input type="radio" name="payment" value="online" onclick="selectPayment(this)">
+                            <span>📱 Online Payment / UPI</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="order-summary-box">
+                    <div class="summary-line">
+                        <span>Items Total</span>
+                        <span id="checkout-summary-total">₹0</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Delivery Charge</span>
+                        <span class="free-text">FREE</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large w-full">
+                    PLACE ORDER NOW
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ORDER CONFIRMATION MODAL -->
+    <div class="modal-backdrop" id="confirmation-backdrop">
+        <div class="modal-card confirmation-modal text-center">
+            <div class="success-icon">✓</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for choosing UppalapatiFarms. Your order has been registered.</p>
+            
+            <div class="order-id-badge" id="confirmed-order-id">
+                ORDER ID: #UF-84920
+            </div>
+
+            <div class="confirmation-details" id="confirmation-details">
+                <!-- Detailed order summary -->
+            </div>
+
+            <button class="btn btn-primary btn-large" onclick="closeConfirmation()">
+                CONTINUE SHOPPING
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

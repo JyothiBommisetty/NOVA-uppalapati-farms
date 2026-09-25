@@ -1,0 +1,41 @@
+# Heavy media / frame sequence assets (causing push stall due to file size limits)
+
+*.mp4
+video.mp4
+Uppalapati_Loading_Animation_clean.mp4
+
+# Video and audio media files
+*.mov
+*.avi
+*.mkv
+*.webm
+*.mp3
+*.wav
+
+# Large compressed archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Build and environment outputs
+dist/
+build/
+.env
+.env.local
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
