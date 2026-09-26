@@ -1,4 +1,5 @@
 # Heavy media / frame sequence assets (causing push stall due to file size limits)
+frames/
 
 *.mp4
 video.mp4

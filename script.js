@@ -8,7 +8,7 @@
 const frameCount = 1149;
 let currentView = 'cinematic'; // 'cinematic' | 'home'
 let useVideo = false;
-let images = [];
+let images = new Array(frameCount).fill(null);
 let targetFrame = 0;
 let currentFrameFloat = 0;
 let targetTime = 0;
@@ -119,15 +119,59 @@ function navigateToContact() {
 // 3. CINEMATIC FRAME SEQUENCE & VIDEO ENGINE
 // --------------------------------------------------------------------------
 const currentFramePath = index => (
-    `frames/frame-${index.toString().padStart(4, '0')}.jpg`
+    `https://res.cloudinary.com/f1nvqibv/image/upload/frame-${index.toString().padStart(4, '0')}.webp`
 );
 
-// Preload frame images with async decoding
-for (let i = 1; i <= frameCount; i++) {
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = currentFramePath(i);
-    images.push(img);
+// Progressive / Lazy Frame Loader Engine
+const LOOK_AHEAD = 40;
+const LOOK_BEHIND = 15;
+const MAX_CACHE_SIZE = 180;
+let lastCenteredIndex = -1;
+
+function loadFrame(idx) {
+    if (idx < 0 || idx >= frameCount) return null;
+    if (!images[idx]) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = currentFramePath(idx + 1);
+        images[idx] = img;
+    }
+    return images[idx];
+}
+
+function updateFrameWindow(centerIndex) {
+    if (Math.abs(centerIndex - lastCenteredIndex) < 2 && lastCenteredIndex !== -1) return;
+    lastCenteredIndex = centerIndex;
+
+    const start = Math.max(0, centerIndex - LOOK_BEHIND);
+    const end = Math.min(frameCount - 1, centerIndex + LOOK_AHEAD);
+
+    for (let i = start; i <= end; i++) {
+        loadFrame(i);
+    }
+
+    // Memory optimization: evict frames furthest from view if cache exceeds limit
+    let activeIndices = [];
+    for (let i = 0; i < frameCount; i++) {
+        if (images[i]) activeIndices.push(i);
+    }
+
+    if (activeIndices.length > MAX_CACHE_SIZE) {
+        activeIndices.sort((a, b) => Math.abs(b - centerIndex) - Math.abs(a - centerIndex));
+        const numToEvict = activeIndices.length - MAX_CACHE_SIZE;
+        for (let k = 0; k < numToEvict; k++) {
+            const evictIdx = activeIndices[k];
+            if (evictIdx < start - 10 || evictIdx > end + 10) {
+                images[evictIdx].src = '';
+                images[evictIdx] = null;
+            }
+        }
+    }
+}
+
+// Immediately load initial frame window (frames 1..30)
+for (let i = 0; i < 30; i++) {
+    loadFrame(i);
 }
 
 if (video) {
@@ -198,23 +242,32 @@ function render() {
 
     if (useVideo && video && video.readyState >= 2) {
         drawCover(video, video.videoWidth, video.videoHeight);
-    } else if (images.length > 0) {
+    } else {
         const frameIndex = Math.min(frameCount - 1, Math.max(0, Math.floor(currentFrameFloat)));
+        
+        updateFrameWindow(frameIndex);
+        
         const img = images[frameIndex];
         
         if (img && img.complete && img.naturalWidth > 0) {
             drawCover(img, img.naturalWidth, img.naturalHeight);
         } else {
             for (let diff = 1; diff < frameCount; diff++) {
-                const prev = images[Math.max(0, frameIndex - diff)];
-                if (prev && prev.complete && prev.naturalWidth > 0) {
-                    drawCover(prev, prev.naturalWidth, prev.naturalHeight);
-                    break;
+                const prevIndex = frameIndex - diff;
+                if (prevIndex >= 0) {
+                    const prev = images[prevIndex];
+                    if (prev && prev.complete && prev.naturalWidth > 0) {
+                        drawCover(prev, prev.naturalWidth, prev.naturalHeight);
+                        break;
+                    }
                 }
-                const next = images[Math.min(frameCount - 1, frameIndex + diff)];
-                if (next && next.complete && next.naturalWidth > 0) {
-                    drawCover(next, next.naturalWidth, next.naturalHeight);
-                    break;
+                const nextIndex = frameIndex + diff;
+                if (nextIndex < frameCount) {
+                    const next = images[nextIndex];
+                    if (next && next.complete && next.naturalWidth > 0) {
+                        drawCover(next, next.naturalWidth, next.naturalHeight);
+                        break;
+                    }
                 }
             }
         }
